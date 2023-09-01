@@ -5,6 +5,7 @@
 import unittest
 from parameterized import parameterized
 from utils import access_nested_map
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -26,3 +27,16 @@ class TestAccessNestedMap(unittest.TestCase):
         """ Method to test that a KeyError is raised"""
         with self.assertRaises(KeyError):
             access_nested_map(nested_map, result)
+
+
+class TestGetJson(unittest.TestCase):
+    """ Class that inherits from unittest.TestCase."""
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+    ])
+    def test_get_json(self, test_url, test_payload):
+        """ Method to test utils.get_json returns the expected result."""
+        with patch("requests.get") as request:
+            request.json.return_value = test_payload
+            self.assertEqual(get_json(test_url), test_payload)
